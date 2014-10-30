@@ -19,4 +19,9 @@ defmodule WorldTest do
     assert World.empty? == false
   end
 
+  test "get neighbors for a cell" do
+    World.init [{1,1}]
+    assert Enum.sort(World.get_neighbors_for({1,1})) == Enum.sort([{0,0}, {1,0}, {2,0}, {0,1}, {2,1}, {0,2}, {1,2}, {2,2}])
+  end
+
 end
