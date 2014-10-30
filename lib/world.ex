@@ -27,8 +27,8 @@ defmodule World do
     x = elem(cell,0)
     y = elem(cell,1)
 
-    for i <- x-1..x+1 do
-      for j <- y-1..y+1, (i != x or j != y) do
+    for i <- x-1..x+1, i>= 0 do
+      for j <- y-1..y+1, j>=0 and (i != x or j != y) do
         {i,j}
       end
     end
