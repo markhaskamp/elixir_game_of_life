@@ -19,16 +19,16 @@ defmodule GameOfLifeTest do
   end
 
   test "get neighbors for {0,0}" do
-    neighbors = World.get_neighbors_for {0,0}
-    assert Enum.sort(neighbors) == Enum.sort([{1,0}, {0,1}, {1,1}])
-  end
+     neighbors = World.get_neighbors_for {0,0}
+     assert Enum.sort(neighbors) == Enum.sort([{1,0}, {0,1}, {1,1}])
+   end
 
   test "get alive neighbors for a cell" do
-    World.start_link [{1,1}, {2,1}, {3,1}]
-    assert World.get_alive_neighbors_for({1,1}) == [{2,1}]
-    assert World.get_alive_neighbors_for({2,1}) == [{1,1}, {3,1}]
-    assert World.get_alive_neighbors_for({3,1}) == [{2,1}]
-  end
+     World.start_link [{1,1}, {2,1}, {3,1}]
+     assert World.get_alive_neighbors_for({1,1}) == [{2,1}]
+     assert World.get_alive_neighbors_for({2,1}) == [{1,1}, {3,1}]
+     assert World.get_alive_neighbors_for({3,1}) == [{2,1}]
+   end
 
   test "get dead neighbors for a cell" do
     World.start_link [{1,1}, {2,1}, {3,1}, {1,2}]

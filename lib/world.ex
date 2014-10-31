@@ -1,14 +1,14 @@
-
 defmodule World do
 
   use GenServer
 
-  def start_link,               do: GenServer.start_link(__MODULE__, [], name: __MODULE__)
-  def start_link(initial_list), do: GenServer.start_link(__MODULE__, initial_list, name: __MODULE__)
+  def start_link,               do: Agent.start_link(fn -> [] end, name: __MODULE__)
+  def start_link(initial_list), do: Agent.start_link(fn -> initial_list end, name: __MODULE__)
 
   # public api
-  def add_cell(cell), do: GenServer.cast(__MODULE__, {:add_cell, cell})
-  def empty?,         do: GenServer.call(__MODULE__, :empty?)
+  def add_cell(cell),  do: Agent.update(__MODULE__, fn(list) -> [cell | list] end)
+  def empty?,          do: Agent.get(__MODULE__, fn(list) -> Enum.count(list) == 0 end)
+  def get_alive_cells, do: Agent.get(__MODULE__, fn(list) -> list end)
 
   def get_neighbors_for(cell) do
     x = elem cell,0
@@ -27,7 +27,7 @@ defmodule World do
   end
 
   def get_alive_neighbors_for(cell) do
-    alive_cells = GenServer.call(__MODULE__, :alive_cells)
+    alive_cells = get_alive_cells
 
     get_neighbors_for(cell)
     |>
@@ -35,7 +35,7 @@ defmodule World do
   end
 
   def get_dead_neighbors_for(cell) do
-    alive_cells = GenServer.call(__MODULE__, :alive_cells)
+    alive_cells = get_alive_cells
 
     get_neighbors_for(cell)
     |>
@@ -43,7 +43,7 @@ defmodule World do
   end
 
   def react_to_tick do
-    alive_cells = GenServer.call(__MODULE__, :alive_cells)
+    alive_cells = get_alive_cells
     still_alive = get_cells_to_remain_alive(alive_cells)
     zombie_cells = get_cells_to_come_alive(alive_cells)
 
@@ -73,21 +73,6 @@ defmodule World do
     Enum.into(list, HashSet.new)
     |>
     Enum.to_list
-  end
-
-
-
-  # GenServer implementation
-  def handle_cast({:add_cell, cell}, state) do
-    {:noreply, [cell | state]}
-  end
-
-  def handle_call(:empty?, _from, alive_cells) do
-    {:reply, Enum.count(alive_cells) == 0, alive_cells}
-  end
-
-  def handle_call(:alive_cells, _from, alive_cells) do
-    {:reply, alive_cells, alive_cells}
   end
 
 
