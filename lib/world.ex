@@ -7,7 +7,7 @@ defmodule World do
 
   # public api
   def add_cell(cell),  do: Agent.update(__MODULE__, fn(list) -> [cell | list] end)
-  def empty?,          do: Agent.get(__MODULE__, fn(list) -> Enum.count(list) == 0 end)
+  def empty?,          do: Agent.get(__MODULE__, fn(list) -> Enum.empty?(list) end)
   def get_alive_cells, do: Agent.get(__MODULE__, fn(list) -> list end)
 
   def get_neighbors_for(cell) do
